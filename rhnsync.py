@@ -26,7 +26,7 @@ import os
 #
 config = ConfigParser.ConfigParser()
 config.optionxform = str
-config.read('sync.conf')
+config.read('/var/cache/rhn/scripts/sync.conf')
 
 base_dir = config.get('default', 'base_dir')
 
