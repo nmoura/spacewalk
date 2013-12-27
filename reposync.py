@@ -26,6 +26,7 @@ import ConfigParser
 import subprocess
 import os
 import smtplib
+import socket
 from email.mime.text import MIMEText
 
 #
@@ -33,7 +34,7 @@ from email.mime.text import MIMEText
 #
 config = ConfigParser.ConfigParser()
 config.optionxform = str
-config.read('sync.conf')
+config.read('/var/cache/rhn/scripts/sync.conf')
 
 spacewalk_url = config.get('spacewalk', 'spacewalk_url')
 spacewalk_login = config.get('spacewalk', 'spacewalk_login')
@@ -42,7 +43,7 @@ spacewalk_password = config.get('spacewalk', 'spacewalk_password')
 os.environ['http_proxy'] = config.get('default', 'proxy')
 os.environ['https_proxy'] = config.get('default', 'proxy')
 
-mail_from = os.environ['USER'] + '@' + os.environ['HOSTNAME']
+mail_from = os.environ['USER'] + '@' + socket.gethostname()
 mail_to = config.get('default', 'mail_to')
 mail_server = config.get('default', 'mail_server')
 
@@ -125,8 +126,7 @@ for origin_channel in merge.keys():
 logout_spacewalk()
 
 #
-# Finalize sending an email if a problem happened.
+# Finalize sending an email if there was a problem.
 #
 if len(channel_repo_problem) > 0:
-send_mail('Repository synchronism report',
-          str(channel_repo_problem))
+    send_mail('Sincronismo de repositorio(s)',str(channel_repo_problem))
